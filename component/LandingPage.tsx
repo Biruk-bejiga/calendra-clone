@@ -1,4 +1,6 @@
 'use client'
+import { SignIn } from "@clerk/nextjs";
+import { neobrutalism } from "@clerk/themes";
 import Image from "next/image";
 
 export default function LandingPage() {
@@ -23,7 +25,15 @@ export default function LandingPage() {
                             height={500}
                             className="mt-6"
                         />
+                      
             </section>
+              <div className="mt-3">
+                            <SignIn 
+                            routing="hash" 
+                            appearance={{
+                                baseTheme: neobrutalism,
+                            }}/>
+                        </div>
         </main>
     )
 }

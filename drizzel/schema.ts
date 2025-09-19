@@ -1,5 +1,6 @@
 
 import { DAYS_OF_WEEK_IN_ORDER } from "@/constants";
+import { relations } from "drizzle-orm";
 import { pgTable, uuid,  integer, text, boolean, timestamp, index, pgEnum } from "drizzle-orm/pg-core";
 
 const createdAt = timestamp("created_at").notNull().defaultNow();
@@ -27,6 +28,9 @@ export const events = pgTable("events", {
         createdAt,
         updatedAt,
     }, );
+    export const schedulesRelations = relations(schedules, ({ many }) => ({
+        availabilities: many(scheduleAvailabilities),
+    }));
     export const sechduleDayOfWeekEnum = pgEnum("days", DAYS_OF_WEEK_IN_ORDER)
     export const scheduleAvailabilities = pgTable("schedule_availabilities", {
         id: uuid("id").primaryKey().defaultRandom(),
@@ -39,3 +43,10 @@ export const events = pgTable("events", {
         index("scheduleIdIndex").on(table.scheduleId),
     ]
 );
+
+export const scheduleAvailabilitiesRelations = relations(scheduleAvailabilities, ({ one }) => ({
+    schedule: one(schedules, {
+        fields: [scheduleAvailabilities.scheduleId],
+        references: [schedules.id],
+    }),
+}));

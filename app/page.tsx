@@ -1,4 +1,4 @@
-import LandingPage from "@/component/LandingPage";
+import LandingPage from "@/components/LandingPage";
 import { currentUser } from "@clerk/nextjs/server";
 
 import { redirect } from "next/navigation";

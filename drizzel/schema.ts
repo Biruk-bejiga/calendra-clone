@@ -5,12 +5,12 @@ import { pgTable, uuid,  integer, text, boolean, timestamp, index, pgEnum } from
 
 const createdAt = timestamp("created_at").notNull().defaultNow();
 const updatedAt = timestamp("updated_at").notNull().defaultNow().$onUpdate(() => new Date());
-export const events = pgTable("events", {
+export const EventTable = pgTable("events", {
    id: uuid("id").primaryKey().defaultRandom(),
     name: text("name").notNull(),
     description: text("description"),
     duration: integer("duration").notNull(), // duration in minutes
-    clerkUserId: boolean("clerk_user_id").notNull(),
+    clerkUserId: text("clerk_user_id").notNull(),
     isActive: boolean("is_active").notNull().default(true),
     createdAt,
     updatedAt,

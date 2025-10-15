@@ -12,7 +12,7 @@ type EventCardProps = {
     isActive: boolean
     name: string
     description: string | null
-    durationInMinutes: number
+    duration: number
     clerkUserId: string
   }
   
@@ -22,7 +22,7 @@ type EventCardProps = {
     isActive,
     name,
     description,
-    durationInMinutes,
+    duration,
     clerkUserId,
   }: EventCardProps) {
 
@@ -32,7 +32,7 @@ type EventCardProps = {
           <CardHeader className={cn(!isActive && "opacity-50")}>
             <CardTitle>{name}</CardTitle>
             <CardDescription>
-              {formatEventDescription(durationInMinutes)}
+              {formatEventDescription(duration)}
             </CardDescription>
           </CardHeader>
     

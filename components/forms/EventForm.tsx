@@ -26,7 +26,7 @@ export default function EventForm({
       id: string // Unique identifier for the event
       name: string // Name of the event
       description?: string // Optional description of the event
-      durationInMinutes: number // Duration of the event in minutes
+      duration: number // Duration of the event in minutes
       isActive: boolean // Indicates whether the event is currently active
     }
   }) {
@@ -49,7 +49,7 @@ export default function EventForm({
         ? {
             // If `event` is provided (edit mode), spread its existing properties as default values
             ...event,
-            duration: Number(event.durationInMinutes), // Ensure number type
+            duration: Number(event.duration), // Ensure number type
           }
           : {
             // If `event` is not provided (create mode), use these fallback defaults

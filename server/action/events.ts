@@ -25,20 +25,19 @@ export async function createEvent(
       if (!success || !userId) {
         throw new Error("Invalid event data or user not authenticated.")
       }
-      
+  
       // Insert the validated event data into the database, linking it to the authenticated user
-      // cast to any to work around mismatched inferred insert types from the schema
       await db.insert(EventTable).values({ ...data, clerkUserId: userId })
      
-     
-    } catch (error: any) {
-      // Log full error for debugging (server console)
-      console.error("createEvent error:", error);
-      // Re-throw the original error so the full DB error is preserved
-      throw error;
-    } finally {
-      revalidatePath('/events');
       
+    } catch (error: any) {
+      // If any error occurs during the process, throw a new error with a readable message
+      throw new Error(`Failed to create event: ${error.message || error}`)
+    } finally {
+      
+       // Revalidate the '/events' path to ensure the page fetches fresh data after the database operation
+       revalidatePath('/events')
+
     }
   }
 
@@ -63,8 +62,8 @@ export async function updateEvent(
       const { rowCount } = await db
         .update(EventTable)
         .set({ ...data }) // Update with validated data
-        .where(and(eq(EventTable.id, id), eq(EventTable.clerkUserId, userId as any))) // Ensure user owns the event
-
+        .where(and(eq(EventTable.id, id), eq(EventTable.clerkUserId, userId))) // Ensure user owns the event
+  
       // If no event was updated (either not found or not owned by the user), throw an error
       if (rowCount === 0) {
         throw new Error("Event not found or user not authorized to update this event.")
@@ -98,8 +97,8 @@ export async function updateEvent(
         // Attempt to delete the event only if it belongs to the authenticated user
         const { rowCount } = await db
           .delete(EventTable)
-          .where(and(eq(EventTable.id, id), eq(EventTable.clerkUserId, userId as any)))
-
+          .where(and(eq(EventTable.id, id), eq(EventTable.clerkUserId, userId)))
+    
         // If no event was deleted (either not found or not owned by user), throw an error
         if (rowCount === 0) {
           throw new Error("Event not found or user not authorized to delete this event.")
@@ -128,7 +127,7 @@ export async function getEvents(clerkUserId: string): Promise<EventRow[]> {
     // clerkUserId is a variable (likely passed in earlier to the query).
 
     // userIdCol is a reference to a column in your database (you're just renaming clerkUserId to userIdCol for clarity).
-    where: ({ clerkUserId: userIdCol }, { eq }) => eq(userIdCol, clerkUserId as any),
+    where: ({ clerkUserId: userIdCol }, { eq }) => eq(userIdCol, clerkUserId),
 
     // Events are ordered alphabetically (case-insensitive) by name
     orderBy: ({ name }, { asc, sql }) => asc(sql`lower(${name})`),
@@ -143,7 +142,7 @@ export async function getEvents(clerkUserId: string): Promise<EventRow[]> {
 export async function getEvent(userId: string, eventId: string): Promise<EventRow | undefined> {
   const event = await db.query.EventTable.findFirst({
     where: ({ id, clerkUserId }, { and, eq }) =>
-      and(eq(clerkUserId, userId as any), eq(id, eventId)), // Make sure the event belongs to the user
+      and(eq(clerkUserId, userId), eq(id, eventId)), // Make sure the event belongs to the user
   })
 
   return event ?? undefined // Explicitly return undefined if not found
@@ -164,7 +163,7 @@ export async function getPublicEvents(clerkUserId: string): Promise<PublicEvent[
   // Events are ordered alphabetically (case-insensitive) by name
   const events = await db.query.EventTable.findMany({
     where: ({ clerkUserId: userIdCol, isActive }, { eq, and }) =>
-      and(eq(userIdCol, clerkUserId as any), eq(isActive, true)),
+      and(eq(userIdCol, clerkUserId), eq(isActive, true)),
     orderBy: ({ name }, { asc, sql }) => asc(sql`lower(${name})`),
   })
 

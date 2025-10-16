@@ -1,11 +1,11 @@
 export const DAYS_OF_WEEK_IN_ORDER = [
-    "sunday",
-    "monday",
-    "tuesday",
-    "wednesday",
-    "thursday",
-    "friday",
-    "saturday",
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
 ] as const;
 export const PrivateNavLinks = [
     {

@@ -1,8 +1,22 @@
-export default function page() {
-    return (
-        <div className="flex flex-col items-center justify-center min-h-screen py-2">
-            <h1 className="text-4xl font-bold mb-4">Public Book Page</h1>
-            <p className="text-lg text-gray-600">This is the public book page content.</p>
-        </div>
-    );
+'use client'
+
+import Loading from "@/components/Loading"
+import { useUser } from "@clerk/nextjs"
+import { redirect } from "next/navigation"
+
+export default function PublicPage() {
+  const { user, isLoaded } = useUser()  // Using `isLoaded` to check if user data is available
+
+  if (!isLoaded) {
+    // Display loading until user data is loaded
+    return <Loading />
+  }
+
+  if (!user) {
+    // Redirect to login if no user is found
+    return redirect('/login')
+  }
+
+  // Once user is available, redirect to the booking page [Public Profile Page]
+  return redirect(`/book/${user.id}`)
 }

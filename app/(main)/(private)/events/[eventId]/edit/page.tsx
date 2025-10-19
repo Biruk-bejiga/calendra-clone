@@ -1,6 +1,6 @@
 import EventForm from "@/components/forms/EventForm"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { getEvent } from "@/server/action/events"
+import { getEvent } from "@/server/actions/events"
 import { auth } from "@clerk/nextjs/server"
 
 // The default exported async function for the EditEventPage

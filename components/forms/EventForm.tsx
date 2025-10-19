@@ -11,7 +11,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Button } from "@/components/ui/button"
 import { useTransition } from "react"
 import Link from "next/link"
-import { createEvent, updateEvent, deleteEvent } from "@/server/action/events"
+import { createEvent, updateEvent, deleteEvent } from "@/server/actions/events"
 import { useRouter } from "next/navigation"
 
   // Marks this as a Client Component in Next.js

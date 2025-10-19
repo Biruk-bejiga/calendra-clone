@@ -14,7 +14,7 @@ import { Button } from "../ui/button"
 import { Plus, X } from "lucide-react"
 import { Input } from "../ui/input"
 import { toast } from "sonner"
-import { saveSchedule } from "@/server/action/schedule"
+import { saveSchedule } from "@/server/actions/schedule"
 
 // Define the Availability type
 type Availability = {

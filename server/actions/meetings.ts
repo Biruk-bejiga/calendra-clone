@@ -1,6 +1,6 @@
 'use server'
 
-import { db } from "@/drizzle/db";
+import { db } from "@/drizzel/db";
 import { meetingActionSchema } from "@/schema/meetings";
 import { fromZonedTime } from "date-fns-tz";
 import { getValidTimesFromSchedule } from "./schedule";
@@ -52,7 +52,7 @@ export async function createMeeting(
     await createCalendarEvent({
       ...data, // guest info, timezone, etc.
       startTime: startInTimezone, // adjusted to the right timezone
-      durationInMinutes: event.durationInMinutes, // use duration from the event
+      durationInMinutes: event.duration, // use duration from the event
       eventName: event.name, // use event name from DB
     });
     return {clerkUserId: data.clerkUserId, eventId : data.eventId, startTime: data.startTime}

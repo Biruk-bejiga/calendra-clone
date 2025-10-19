@@ -107,10 +107,10 @@ export async function saveSchedule(
  */
 export async function getValidTimesFromSchedule(
     timesInOrder: Date[], // All possible time slots to check
-    event: { clerkUserId: string; durationInMinutes: number } // Event-specific data
+    event: { clerkUserId: string; duration: number } // Event-specific data
 ) : Promise<Date[]> {
 
-  const {clerkUserId: userId, durationInMinutes} = event
+  const {clerkUserId: userId, duration} = event
 
   // Define the start and end of the overall range to check
   const start = timesInOrder[0]
@@ -150,7 +150,7 @@ export async function getValidTimesFromSchedule(
   // Define the time range for a potential event starting at this interval
   const eventInterval = {
     start: intervalDate, // Proposed start time
-    end: addMinutes(intervalDate, durationInMinutes), // Proposed end time (start + duration)
+    end: addMinutes(intervalDate, duration), // Proposed end time (start + duration)
   }
 
   // Keep only the time slots that satisfy two conditions:

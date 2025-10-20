@@ -110,7 +110,7 @@ export async function getCalendarEventTimes(
     guestEmail,
     startTime,
     guestNotes,
-    durationInMinutes,
+    duration,
     eventName,
   }: {
     clerkUserId: string // The unique ID of the Clerk user.
@@ -118,7 +118,7 @@ export async function getCalendarEventTimes(
     guestEmail: string // The email address of the guest.
     startTime: Date // The start time of the event.
     guestNotes?: string | null // Optional notes for the guest (can be null or undefined).
-    durationInMinutes: number // The duration of the event in minutes.
+    duration: number // The duration of the event in minutes.
     eventName: string // The name or title of the event.
   }): Promise<calendar_v3.Schema$Event> {  // Specify the return type as `Event`, which represents the created calendar event.
     
@@ -160,7 +160,7 @@ export async function getCalendarEventTimes(
             dateTime: startTime.toISOString(), // Start time of the event.
           },
           end: {
-            dateTime: addMinutes(startTime, durationInMinutes).toISOString(), // Calculate the end time based on the duration.
+            dateTime: addMinutes(startTime, duration).toISOString(), // Calculate the end time based on the duration.
           },
           summary: `${guestName} + ${calendarUser.firstName} ${calendarUser.lastName}: ${eventName}`, // Title of the event, including the guest and user names.
         },

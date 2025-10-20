@@ -52,7 +52,7 @@ export async function createMeeting(
     await createCalendarEvent({
       ...data, // guest info, timezone, etc.
       startTime: startInTimezone, // adjusted to the right timezone
-      durationInMinutes: event.duration, // use duration from the event
+      duration: event.duration, // use duration from the event
       eventName: event.name, // use event name from DB
     });
     return {clerkUserId: data.clerkUserId, eventId : data.eventId, startTime: data.startTime}

@@ -45,6 +45,8 @@ export async function createMeeting(
 
     // If the selected time is not valid, throw an error
     if (validTimes.length === 0) {
+      // Log the invalid time for debugging purposes
+      console.error(`Validation failed for time: ${startInTimezone.toISOString()} in timezone: ${data.timezone}`);
       throw new Error("Selected time is not valid.");
     }
 

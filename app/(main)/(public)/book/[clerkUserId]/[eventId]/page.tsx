@@ -13,12 +13,12 @@ import { clerkClient } from "@clerk/nextjs/server";
 import MeetingForm from "@/components/forms/MeetingForm";
 
 export default async function BookingPage({
-    params
-  }: {
-    params: Promise<{ clerkUserId: string; eventId: string }>
-  }) {
+  params,
+}: {
+  params: { clerkUserId: string; eventId: string }
+}) {
 
-    const { clerkUserId, eventId } = await params
+    const { clerkUserId, eventId } = params
 
     // Fetch the event details from the database using the provided user and event IDs
     const event = await getEvent(clerkUserId, eventId)

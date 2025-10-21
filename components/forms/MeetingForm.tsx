@@ -60,9 +60,11 @@ export default function MeetingForm({
     const date = form.watch("date")
 
         // Convert valid times to the selected timezone
-    const validTimesInTimezone = useMemo(() => {
-        return validTimes.map(date => toZonedTime(date, timezone))
-    }, [validTimes, timezone])
+  // Keep original UTC instants for submission and a localized copy for display only
+  const validTimesInTimezone = useMemo(() => {
+    return validTimes.map(date => toZonedTime(date, timezone))
+  }, [validTimes, timezone])
+  const validTimesUtc = useMemo(() => validTimes, [validTimes])
 
     // Handle form submission
     async function onSubmit(values: z.infer<typeof meetingFormSchema>) {
@@ -187,9 +189,10 @@ export default function MeetingForm({
                         <FormLabel>Time</FormLabel>
                         <Select
                           disabled={date == null || timezone == null}
-                          onValueChange={value =>
-                            field.onChange(new Date(Date.parse(value)))
-                          }
+                          onValueChange={value => {
+                            // value is ISO string of the UTC instant; use it directly
+                            field.onChange(new Date(value))
+                          }}
                           defaultValue={field.value?.toISOString()}
                         >
                           <FormControl>
@@ -206,13 +209,14 @@ export default function MeetingForm({
                           <SelectContent>
                             {/* Show time options only for the selected day */}
                             {validTimesInTimezone
-                              .filter(time => isSameDay(time, date))
-                              .map(time => (
+                              .map((localTime, idx) => ({ localTime, utcTime: validTimesUtc[idx] }))
+                              .filter(({ localTime }) => isSameDay(localTime, date))
+                              .map(({ localTime, utcTime }) => (
                                 <SelectItem
-                                  key={time.toISOString()}
-                                  value={time.toISOString()}
+                                  key={utcTime.toISOString()}
+                                  value={utcTime.toISOString()}
                                 >
-                                  {formatTimeString(time)}
+                                  {formatTimeString(localTime)}
                                 </SelectItem>
                               ))}
                           </SelectContent>

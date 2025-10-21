@@ -37,23 +37,24 @@ export async function createMeeting(
       throw new Error("Event not found.");
     }
 
-    // Interpret the start time as being in the user's timezone and convert it to a UTC Date
-    const startInTimezone = fromZonedTime(data.startTime, data.timezone);
+  // Treat the incoming startTime as the exact UTC instant selected by the client
+  // The client will submit the UTC value; avoid re-interpreting it in another timezone
+  const startUtc = data.startTime;
 
-    // Check if the selected time is valid for the event's availability
-    const validTimes = await getValidTimesFromSchedule([startInTimezone], event);
+  // Check if the selected time is valid for the event's availability
+  const validTimes = await getValidTimesFromSchedule([startUtc], event);
 
     // If the selected time is not valid, throw an error
     if (validTimes.length === 0) {
       // Log the invalid time for debugging purposes
-      console.error(`Validation failed for time: ${startInTimezone.toISOString()} in timezone: ${data.timezone}`);
+      console.error(`Validation failed for time: ${startUtc.toISOString()} in timezone: ${data.timezone}`);
       throw new Error("Selected time is not valid.");
     }
 
     // Create the Google Calendar event with all necessary details
     await createCalendarEvent({
       ...data, // guest info, timezone, etc.
-      startTime: startInTimezone, // adjusted to the right timezone
+      startTime: startUtc, // already an exact UTC instant
       duration: event.duration, // use duration from the event
       eventName: event.name, // use event name from DB
     });

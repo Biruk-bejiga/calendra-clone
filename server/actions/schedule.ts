@@ -222,15 +222,22 @@ function getAvailabilities(
     // Parse endTime (e.g., "17:00") into hours and minutes
     const [endHour, endMinute] = endTime.split(":").map(Number)
 
+    // Create a clean date object for the target day in the target timezone
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDate();
+    const cleanDate = new Date(year, month, day);
+
+
     // Create a start Date object set to the correct hour and minute, then convert it to the given timezone
     const start = fromZonedTime(
-      setMinutes(setHours(date, startHour), startMinute),
+      setMinutes(setHours(cleanDate, startHour), startMinute),
       timezone
     )
 
     // Create an end Date object set to the correct hour and minute, then convert it to the given timezone
     const end = fromZonedTime(
-      setMinutes(setHours(date, endHour), endMinute),
+      setMinutes(setHours(cleanDate, endHour), endMinute),
       timezone
     )
 

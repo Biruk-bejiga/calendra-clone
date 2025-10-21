@@ -13,7 +13,7 @@ import { AlertTriangle } from "lucide-react";
   }: {
     // Define expected route parameters and search parameters
     params: Promise<{ clerkUserId: string; eventId: string }>
-    searchParams: Promise<{ startTime: string }>
+    searchParams: Promise<{ startTime?: string }>
   }) {
     const { clerkUserId, eventId } = await params
     const { startTime } = await searchParams
@@ -32,7 +32,7 @@ import { AlertTriangle } from "lucide-react";
         const calendarUser = await client.users.getUser(clerkUserId)
     
         // Convert the received start time string to a JavaScript Date object
-        const startTimeDate = new Date(startTime)
+  const startTimeDate = startTime ? new Date(startTime) : new Date()
 
          // Render the success message with event and user details
     return (

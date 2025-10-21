@@ -15,10 +15,10 @@ import MeetingForm from "@/components/forms/MeetingForm";
 export default async function BookingPage({
   params,
 }: {
-  params: { clerkUserId: string; eventId: string }
+  params: Promise<{ clerkUserId: string; eventId: string }>
 }) {
 
-    const { clerkUserId, eventId } = params
+    const { clerkUserId, eventId } = await params
 
     // Fetch the event details from the database using the provided user and event IDs
     const event = await getEvent(clerkUserId, eventId)

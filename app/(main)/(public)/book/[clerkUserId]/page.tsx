@@ -5,9 +5,9 @@ import { clerkClient } from "@clerk/nextjs/server"
 export default async function PublicProfilePage({
   params,
 }: {
-  params: Promise<{ clerkUserId: string }>
+  params: { clerkUserId: string }
 }) {
-  const { clerkUserId } = await params
+  const { clerkUserId } = params
   const client = await clerkClient()
   const user = await client.users.getUser(clerkUserId)
   const { fullName } = user // Extract the user's full name

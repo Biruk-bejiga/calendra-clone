@@ -16,6 +16,11 @@ export async function createMeeting(
   try {
     // Validate the incoming data against the schema
     const { success, data } = meetingActionSchema.safeParse(unsafeData);
+    if (success) {
+      console.log(
+        `createMeeting payload: startTime=${data.startTime.toISOString()} timezone=${data.timezone} eventId=${data.eventId} clerkUserId=${data.clerkUserId}`
+      )
+    }
 
     // If validation fails, throw an error
     if (!success) {

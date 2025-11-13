@@ -21,7 +21,7 @@ export const PrivateNavLinks = [
     },
     {
         imgURL: "/assets/public.svg",
-        route: "/public",
+        route: "/book",
         label: "Public profile",
     },
 ] as const;

@@ -15,6 +15,7 @@ import { Plus, X } from "lucide-react"
 import { Input } from "../ui/input"
 import { toast } from "sonner"
 import { saveSchedule } from "@/server/actions/schedule"
+import { t, DEFAULT_LOCALE, SUPPORTED_LOCALES, Locale } from "@/lib/i18n"
 
 // Define the Availability type
 type Availability = {
@@ -34,6 +35,12 @@ export function ScheduleForm({
       availabilities: Availability[]
     }
   }) {
+                // Determine locale from cookie on client
+                let locale: Locale = DEFAULT_LOCALE
+                if (typeof document !== 'undefined') {
+                    const cookieLocale = document.cookie.split(';').map(c => c.trim()).find(c => c.startsWith('locale='))?.split('=')[1] as Locale | undefined
+                    if (cookieLocale && SUPPORTED_LOCALES.includes(cookieLocale)) locale = cookieLocale
+                }
 
         // Initialize form with validation schema and default values
         const form = useForm<z.infer<typeof scheduleFormSchema>>({
@@ -64,7 +71,7 @@ export function ScheduleForm({
             async function onSubmit(values: z.infer<typeof scheduleFormSchema>) {
                 try {
                 await saveSchedule(values)
-                toast("Schedule saved successfully.", {
+                toast(t('schedule.saved', locale), {
                     duration: 5000,
                     className: '!rounded-3xl !py-8 !px-5 !justify-center !text-green-400 !font-black',
                 })
@@ -98,7 +105,7 @@ export function ScheduleForm({
                         name="timezone"
                         render={({ field }) => (
                             <FormItem>
-                            <FormLabel>Timezone</FormLabel>
+                            <FormLabel>{t('schedule.timezone', locale)}</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
                                 <SelectTrigger>
@@ -236,7 +243,7 @@ export function ScheduleForm({
                         className="cursor-pointer hover:scale-105 bg-blue-400 hover:bg-blue-600"
                         disabled={form.formState.isSubmitting}
                         type="submit">
-                            Save
+                            {t('schedule.save', locale)}
                         </Button>
                     </div>
                 </form>

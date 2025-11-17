@@ -13,6 +13,7 @@ import { useTransition } from "react"
 import Link from "next/link"
 import { createEvent, updateEvent, deleteEvent } from "@/server/actions/events"
 import { useRouter } from "next/navigation"
+import { t, DEFAULT_LOCALE, SUPPORTED_LOCALES, Locale } from "@/lib/i18n"
 
   // Marks this as a Client Component in Next.js
 
@@ -39,6 +40,13 @@ export default function EventForm({
 
     const [isDeletePending, startDeleteTransition] = useTransition()
     const router = useRouter()
+
+        // Determine locale from cookie on client
+        let locale: Locale = DEFAULT_LOCALE
+        if (typeof document !== 'undefined') {
+            const cookieLocale = document.cookie.split(';').map(c => c.trim()).find(c => c.startsWith('locale='))?.split('=')[1] as Locale | undefined
+            if (cookieLocale && SUPPORTED_LOCALES.includes(cookieLocale)) locale = cookieLocale
+        }
 
 
     type EventFormValues = z.infer<typeof eventFormSchema>;
@@ -70,9 +78,9 @@ export default function EventForm({
 
         } catch (error: any) {
             // Handle any error that occurs during the action (e.g., network error)
-          form.setError("root", {
-            message: `There was an error saving your event ${error.message}`,
-          })
+                    form.setError("root", {
+                        message: t('eventForm.errorSaving', locale, { message: String(error.message ?? '') }),
+                    })
         }
     }
 
@@ -96,12 +104,12 @@ export default function EventForm({
                 name="name"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Event Name</FormLabel>
+                    <FormLabel>{t('eventForm.nameLabel', locale)}</FormLabel>
                     <FormControl>
                         <Input {...field} />
                     </FormControl>
                     <FormDescription>
-                        The name users will see when booking
+                        {t('eventForm.nameHelp', locale)}
                     </FormDescription>
                     <FormMessage />
                     </FormItem>
@@ -114,11 +122,11 @@ export default function EventForm({
                 name="duration"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Duration</FormLabel>
+                    <FormLabel>{t('eventForm.durationLabel', locale)}</FormLabel>
                     <FormControl>
                         <Input type="number" {...field} />
                     </FormControl>
-                    <FormDescription>In minutes</FormDescription>
+                    <FormDescription>{t('eventForm.durationHelp', locale)}</FormDescription>
                     <FormMessage />
                     </FormItem>
                 )}
@@ -130,12 +138,12 @@ export default function EventForm({
                 name="description"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Description</FormLabel>
+                    <FormLabel>{t('eventForm.descriptionLabel', locale)}</FormLabel>
                     <FormControl>
                         <Textarea className="resize-none h-32" {...field} />
                     </FormControl>
                     <FormDescription>
-                        Optional description of the event
+                        {t('eventForm.descriptionHelp', locale)}
                     </FormDescription>
                     <FormMessage />
                     </FormItem>
@@ -155,10 +163,10 @@ export default function EventForm({
                             onCheckedChange={field.onChange}
                         />
                         </FormControl>
-                        <FormLabel>Active</FormLabel>
+                        <FormLabel>{t('eventForm.activeLabel', locale)}</FormLabel>
                     </div>
                     <FormDescription>
-                        Inactive events will not be visible for users to book
+                        {t('eventForm.inactiveHelp', locale)}
                     </FormDescription>
                     </FormItem>
                 )}
@@ -175,19 +183,18 @@ export default function EventForm({
                         variant="destructive"
                         disabled={isDeletePending || form.formState.isSubmitting}
                         >
-                        Delete
+                        {t('eventForm.delete', locale)}
                         </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                         <AlertDialogHeader>
-                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogTitle>{t('eventForm.confirmTitle', locale)}</AlertDialogTitle>
                         <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete
-                            this event.
+                            {t('eventForm.confirmDesc', locale)}
                         </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogCancel>{t('eventForm.cancel', locale)}</AlertDialogCancel>
                         <AlertDialogAction
                         className="bg-red-500 hover:bg-red-700 cursor-pointer"
                             disabled={isDeletePending || form.formState.isSubmitting}
@@ -201,7 +208,7 @@ export default function EventForm({
                                 } catch (error: any) {
                                     // If something goes wrong, show an error at the root level of the form
                                     form.setError("root", {
-                                    message: `There was an error deleting your event: ${error.message}`,
+                                    message: t('eventForm.errorDeleting', locale, { message: String(error.message ?? '') }),
                                     })
                                 }
                                 })
@@ -209,7 +216,7 @@ export default function EventForm({
                             
                             
                         >
-                            Delete
+                            {t('eventForm.delete', locale)}
                         </AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
@@ -223,7 +230,7 @@ export default function EventForm({
                     asChild
                     variant="outline"
                 >
-                    <Link href="/events">Cancel</Link>
+                    <Link href="/events">{t('eventForm.cancel', locale)}</Link>
                 </Button>
 
                 {/* Save Button - submits the form */}
@@ -232,7 +239,7 @@ export default function EventForm({
                     disabled={isDeletePending || form.formState.isSubmitting}
                     type="submit"
                 >
-                    Save
+                    {t('eventForm.save', locale)}
                 </Button>
                 </div>
             </form>

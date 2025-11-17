@@ -2,14 +2,17 @@
 
 import EventForm from "@/components/forms/EventForm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { t } from "@/lib/i18n";
+import { detectLocaleServer } from "@/lib/locale";
 
-export default function NewEventPage(){
+export default async function NewEventPage(){
+    const locale = await detectLocaleServer()
     return (
         // Container Card component centered on the page with a max width
         <Card className="max-w-md mx-auto border-8 border-blue-200 shadow-2xl shadow-accent-foreground">
           {/* Header section of the card displaying the title */}
           <CardHeader>
-            <CardTitle>New Event</CardTitle>
+            <CardTitle>{t('events.new', locale)}</CardTitle>
           </CardHeader>
     
           {/* Content section of the card containing the event form */}

@@ -1,6 +1,8 @@
 'use client'
 
 import { PrivateNavLinks } from "@/constants";
+import LanguageSwitcher from "./LanguageSwitcher";
+import { t, SUPPORTED_LOCALES, DEFAULT_LOCALE, Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { SignedIn, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
@@ -8,7 +10,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export default function PrivateNavBar() {
-    const pathname = usePathname();
+  const pathname = usePathname();
+    // Read locale from cookie in client environment
+    let locale: Locale = DEFAULT_LOCALE;
+    if (typeof document !== 'undefined') {
+      const cookieLocale = document.cookie.split(';').map(c => c.trim()).find(c => c.startsWith('locale='))?.split('=')[1];
+      if (cookieLocale && SUPPORTED_LOCALES.includes(cookieLocale as Locale)) {
+        locale = cookieLocale as Locale;
+      }
+    }
 
     return (
         <nav className="flex justify-between items-center fixed z-50 w-full h-28 bg-gray-200 px-10 gap-4 shadow-2xl mb-28">
@@ -50,7 +60,7 @@ export default function PrivateNavBar() {
                         <p className={cn(
                             "text-lg font-semibold max-lg:hidden",
                           )}>
-                          {item.label}
+                          {t(item.labelKey, locale)}
                         </p>
                       </Link>
                     );
@@ -59,7 +69,8 @@ export default function PrivateNavBar() {
               </section>    
 
               {/* User button */}
-              <div className='hover:scale-150 duration-500 '>
+              <div className='flex items-center gap-4 hover:scale-105 duration-300 '>
+                <LanguageSwitcher />
                 <SignedIn>
                     {/* Mount the UserButton component */}
                     <UserButton />

@@ -8,6 +8,7 @@ import { useUser } from "@clerk/nextjs"
 import { Button } from "./ui/button"
 import { toast } from "sonner"
 import PublicEventCard from "./PublicEventCard"
+import { t, SUPPORTED_LOCALES, DEFAULT_LOCALE, Locale } from "@/lib/i18n"
 
 // Define types for the props that PublicProfile component will receive
 type PublicProfileProps = {
@@ -23,10 +24,17 @@ type PublicProfileProps = {
     const {user} = useUser()
 
 
+  // Detect locale from cookie
+  let locale: Locale = DEFAULT_LOCALE
+  if (typeof document !== 'undefined') {
+    const cookieLocale = document.cookie.split(';').map(c=>c.trim()).find(c=>c.startsWith('locale='))?.split('=')[1]
+    if (cookieLocale && SUPPORTED_LOCALES.includes(cookieLocale as Locale)) locale = cookieLocale as Locale
+  }
+
   const copyProfileUrl = async () => {
     try {
       await navigator.clipboard.writeText(`${window.location.origin}/book/${userId}`)
-      toast("Profile URL copied to clipboard!")
+      toast(t('public.copied', locale))
     } catch (error) {
       console.error("Failed to copy URL:", error)
     }
@@ -65,7 +73,7 @@ type PublicProfileProps = {
                 // Info message with Eye icon (for profile owner only)
                 <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4 font-bold">
                     <Eye className="w-4 h-4" />
-                    <p>This is how people will see your public profile</p>
+                  <p>{t('public.info', locale)}</p>
                 </div>
                 )}
 
@@ -83,7 +91,7 @@ type PublicProfileProps = {
                     onClick={copyProfileUrl}
                 >
                     <Copy className="size-4" />
-                    Copy Public Profile URL
+                  {t('public.copyProfile', locale)}
                 </Button>
                 </div>
             )}
@@ -91,16 +99,16 @@ type PublicProfileProps = {
             {/* Welcome message */}
             <div className="text-muted-foreground mb-6 max-w-sm mx-auto text-center">
                 <p className="font-bold text-2xl">
-                Time to meet!🧑‍🤝‍🧑
+                {t('public.timeToMeet', locale)}🧑‍🤝‍🧑
                 </p>
-                <br /> Pick an event and let’s make it official by booking a time.
+                <br /> {t('public.pickEvent', locale)}
             </div>
 
 
             {/* Grid of public event cards */}
             {events.length === 0 ? (
                 <div className="text-center text-muted-foreground">
-                No events available at the moment.
+                {t('public.noEvents', locale)}
                 </div>
             ) : (
                 <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">

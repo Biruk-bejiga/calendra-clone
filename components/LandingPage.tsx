@@ -14,9 +14,9 @@ export default function LandingPage() {
                           height={100}
                           
                           />
-                          <h1 className="text-2xl font-black lg:text-3xl">Your time, perfectly planned</h1>
+                          <h1 className="text-2xl font-black lg:text-3xl">ጊዜዎ፣ በትክክል የታቀደ፣</h1>
                         <p className="font-extralight">
-                            Join million of professionals who easily book meeting with the #1 scheduling tool
+                            #1 የጊዜ ሰሌዳ መሳሪያን በመጠቀም ስብሰባ በቀላሉ የሚያስይዙ በሚሊዮን የሚቆጠሩ ባለሙያዎችን ይቀላቀሉ
                         </p>
                         <Image
                             src="/assets/planning.svg"

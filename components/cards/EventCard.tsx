@@ -4,6 +4,8 @@ import { formatEventDescription } from "@/lib/formatters"
 import { Button } from "../ui/button"
 import Link from "next/link"
 import { CopyEventButton } from "../CopyEventButton"
+import { t } from "@/lib/i18n"
+import { detectLocaleServer } from "@/lib/locale"
 
 
   // Type definition for event card props
@@ -17,7 +19,7 @@ type EventCardProps = {
   }
   
   // Component to display a single event card
-  export default function EventCard ({
+  export default async function EventCard ({
     id,
     isActive,
     name,
@@ -25,6 +27,7 @@ type EventCardProps = {
     duration,
     clerkUserId,
   }: EventCardProps) {
+    const locale = await detectLocaleServer()
 
     return (
         <Card className={cn("flex flex-col border-4 border-blue-500/10 shadow-2xl transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110", !isActive && " bg-accent border-accent")}>
@@ -51,13 +54,14 @@ type EventCardProps = {
                 variant="outline"
                 eventId={id}
                 clerkUserId={clerkUserId}
+                locale={locale}
               />
             )}
             {/* Edit event button */}
             <Button 
             className="cursor-pointer hover:scale-105 bg-blue-400 hover:bg-blue-600"
             asChild>
-              <Link href={`/events/${id}/edit`}>Edit</Link>
+              <Link href={`/events/${id}/edit`}>{t('button.edit', locale)}</Link>
             </Button>
           </CardFooter>
         </Card>

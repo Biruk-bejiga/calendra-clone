@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation"
 import { useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+import { t, SUPPORTED_LOCALES, DEFAULT_LOCALE, Locale } from "@/lib/i18n"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { formatDate, formatTimeString, formatTimezoneOffset } from "@/lib/formatters"
@@ -58,6 +59,13 @@ export default function MeetingForm({
     // Watch timezone and selected date fields for updates
     const timezone = form.watch("timezone")
     const date = form.watch("date")
+
+    // Detect locale from cookie (client-side)
+    let locale: Locale = DEFAULT_LOCALE
+    if (typeof document !== 'undefined') {
+      const cookieLocale = document.cookie.split(';').map(c=>c.trim()).find(c=>c.startsWith('locale='))?.split('=')[1]
+      if (cookieLocale && SUPPORTED_LOCALES.includes(cookieLocale as Locale)) locale = cookieLocale as Locale
+    }
 
         // Convert valid times to the selected timezone
   // Keep original UTC instants for submission and a localized copy for display only
@@ -111,7 +119,7 @@ export default function MeetingForm({
                   name="timezone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Timezone</FormLabel>
+                      <FormLabel>{t('meeting.timezone', locale)}</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
@@ -141,7 +149,7 @@ export default function MeetingForm({
                     render={({ field }) => (
                       <Popover>
                         <FormItem className="flex-1">
-                          <FormLabel>Date</FormLabel>
+                          <FormLabel>{t('meeting.date', locale)}</FormLabel>
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
@@ -186,7 +194,7 @@ export default function MeetingForm({
                     name="startTime"
                     render={({ field }) => (
                       <FormItem className="flex-1">
-                        <FormLabel>Time</FormLabel>
+                        <FormLabel>{t('meeting.time', locale)}</FormLabel>
                         <Select
                           disabled={date == null || timezone == null}
                           onValueChange={value => {
@@ -200,8 +208,8 @@ export default function MeetingForm({
                               <SelectValue
                                 placeholder={
                                   date == null || timezone == null
-                                    ? "Select a date/timezone first"
-                                    : "Select a meeting time"
+                                    ? t('meeting.selectDateTimezone', locale)
+                                    : t('meeting.selectTime', locale)
                                 }
                               />
                             </SelectTrigger>
@@ -234,7 +242,7 @@ export default function MeetingForm({
                     name="guestName"
                     render={({ field }) => (
                       <FormItem className="flex-1">
-                        <FormLabel>Your Name</FormLabel>
+                        <FormLabel>{t('meeting.yourName', locale)}</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
@@ -249,7 +257,7 @@ export default function MeetingForm({
                     name="guestEmail"
                     render={({ field }) => (
                       <FormItem className="flex-1">
-                        <FormLabel>Your Email</FormLabel>
+                        <FormLabel>{t('meeting.yourEmail', locale)}</FormLabel>
                         <FormControl>
                           <Input type="email" {...field} />
                         </FormControl>
@@ -265,7 +273,7 @@ export default function MeetingForm({
                   name="guestNotes"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Notes</FormLabel>
+                      <FormLabel>{t('meeting.notes', locale)}</FormLabel>
                       <FormControl>
                         <Textarea className="resize-none" {...field} />
                       </FormControl>
@@ -282,13 +290,13 @@ export default function MeetingForm({
                     asChild
                     variant="outline"
                   >
-                    <Link href={`/book/${clerkUserId}`}>Cancel</Link>
+                    <Link href={`/book/${clerkUserId}`}>{t('meeting.cancel', locale)}</Link>
                   </Button>
                   <Button 
                   className="cursor-pointer hover:scale-105 bg-blue-400 hover:bg-blue-600"
                   disabled={form.formState.isSubmitting} 
                   type="submit">
-                    Book Event
+                    {t('meeting.book', locale)}
                   </Button>
                 </div>
               </form>

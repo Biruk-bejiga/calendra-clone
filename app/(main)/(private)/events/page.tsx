@@ -4,6 +4,8 @@ import { getEvents } from "@/server/actions/events";
 import { auth } from "@clerk/nextjs/server";
 import { CalendarPlus, CalendarRange } from "lucide-react";
 import Link from "next/link";
+import { t } from "@/lib/i18n";
+import { detectLocaleServer } from "@/lib/locale";
 
 export default async function EventsPage() {
         // Get the authenticated user's ID
@@ -13,13 +15,14 @@ export default async function EventsPage() {
 
         const events = await getEvents(userId)
 
+    const locale = await detectLocaleServer();
     return (
         <section className="flex flex-col items-center gap-16 animate-fade-in">
             {/* Page title and "New Event" button */}
             <div className="flex gap-4 items-baseline">
-                        <h1 className="text-4xl xl:text-5xl font-black mb-6">
-                            Events
-                        </h1>
+              <h1 className="text-4xl xl:text-5xl font-black mb-6">
+                {t('events.title', locale)}
+              </h1>
                         {/* 
                         Without asChild, the Button would render as:
                         <button><a href="/dashboard">Go to Dashboard</a></button> <!-- Invalid HTML -->
@@ -31,7 +34,7 @@ export default async function EventsPage() {
                         className="bg-blue-500 hover:bg-blue-400 text-white py-6 hover:scale-110 duration-500 border-b-4 border-blue-700 hover:border-blue-500 rounded-2xl shadow-accent-foreground text-2xl font-black"
                         asChild>
                             <Link href="/events/new">
-                            <CalendarPlus className="mr-4 size-7" /> Create Event
+                            <CalendarPlus className="mr-4 size-7" /> {t('events.create', locale)}
                             </Link>
                         </Button>
                 </div>
@@ -47,13 +50,12 @@ export default async function EventsPage() {
             ) : (
               <div className="flex flex-col items-center gap-4">
                 <CalendarRange className="size-16 mx-auto text-black" />
-                You do not have any events yet. Create your first event to get
-                started!
+                {t('events.empty', locale)}
                 <Button  
                   className="bg-blue-500 hover:bg-blue-400 text-white py-6 hover:scale-110 duration-500 border-b-4 border-blue-700 hover:border-blue-500 rounded-2xl shadow-accent-foreground shadow-2xl text-2xl font-black"
                   asChild>
                   <Link href="/events/new">
-                    <CalendarPlus className="mr-4 size-7" /> New Event
+                    <CalendarPlus className="mr-4 size-7" /> {t('events.new', locale)}
                   </Link>
                 </Button>
               </div>

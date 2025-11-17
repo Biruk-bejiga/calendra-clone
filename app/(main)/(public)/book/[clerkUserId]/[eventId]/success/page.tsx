@@ -2,6 +2,8 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDateTime } from "@/lib/formatters";
+import { t } from "@/lib/i18n";
+import { detectLocaleServer } from "@/lib/locale";
 import { getEvent } from "@/server/actions/events";
 import { clerkClient } from "@clerk/nextjs/server";
 import { AlertTriangle } from "lucide-react";
@@ -16,6 +18,7 @@ import { AlertTriangle } from "lucide-react";
     searchParams: Promise<{ startTime?: string }>
   }) {
     const { clerkUserId, eventId } = await params
+    const locale = await detectLocaleServer();
     const { startTime } = await searchParams
     // Query the database to find the specific active event that matches the user and event ID
     const event = await getEvent(clerkUserId, eventId)
@@ -39,15 +42,14 @@ import { AlertTriangle } from "lucide-react";
         <Card className="max-w-xl mx-auto border-8 border-blue-200 shadow-2xl shadow-accent-foreground">
           <CardHeader>
             <CardTitle>
-              ✅Successfully Booked {event.name} with {calendarUser.fullName}
+              ✅{t('success.booked', locale, { eventName: event.name, fullName: calendarUser.fullName || '' })}
             </CardTitle>
             {/* Format and display the booking date/time */}
             <CardDescription>{formatDateTime(startTimeDate)}</CardDescription>
           </CardHeader>
           <CardContent>
             {/* Inform the user that a confirmation email is on its way */}
-            You should receive an email confirmation shortly. You can safely close
-            this page now.
+            {t('success.emailSoon', locale)}
           </CardContent>
         </Card>
       )
